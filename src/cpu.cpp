@@ -1,11 +1,16 @@
 #include "cpu.hpp"
 #include <iostream>
+#include <sstream>
 
 void Cpu::runStep()
 {
   instr = fetchInstr();
-  executeInstr();
-  dumpState();
+  try {
+    executeInstr();
+  }
+  catch (std::string ex) {
+    std::cout << "Caught Exception: " << ex << std::endl;
+  }
 }
 
 uint16_t Cpu::fetchInstr()
@@ -28,8 +33,8 @@ void Cpu::executeInstr()
       break;
 
     case 0x0ee: // 00EE Return
-      pc = stack[sp];
       if (sp > 0) { sp--; }
+      pc = stack[sp];
     }
     break;
 
@@ -45,21 +50,21 @@ void Cpu::executeInstr()
   case 3: { // 3XNN Skip the next instr if vX equals NN
     uint8_t x = (instr & 0x0f00) >> 8;
     uint8_t nn = instr & 0x00ff;
-    if (v[x] == nn) { pc++; }
+    if (v[x] == nn) { pc += 2; }
     break;
   }
 
   case 4: { // 4XNN Skip the next instr if vX does not equals NN
     uint8_t x = (instr & 0x0f00) >> 8;
     uint8_t nn = instr & 0x00ff;
-    if (v[x] != nn) { pc++; }
+    if (v[x] != nn) { pc += 2; }
     break;
   }
 
   case 5: { // 5XY0 Skip the next instr if vX equals vY
     uint8_t x = (instr & 0x0f00) >> 8;
     uint8_t y = (instr & 0x00f0) >> 4;
-    if (v[x] == v[y]) { pc++; }
+    if (v[x] == v[y]) { pc += 2; }
     break;
   }
 
@@ -129,7 +134,7 @@ void Cpu::executeInstr()
   case 9: { // 9XY0 Skip the next instr if vX is not equal to vY
     uint8_t x = (instr & 0x0f00) >> 8;
     uint8_t y = (instr & 0x00f0) >> 4;
-    if (v[x] != v[y]) { pc++; }
+    if (v[x] != v[y]) { pc += 2; }
     break;
   }
 
@@ -162,13 +167,14 @@ void Cpu::executeInstr()
     switch (instr & 0x00ff) {
 
     case 0x9e: // EX9E Skip the next instr if the key in vX is pressed
-      if (input.isPressed(x)) { pc++; }
+      if (input.isPressed(x)) { pc += 2; }
       break;
 
     case 0xa1: // EXA1 Skip the next instr if the key in vX is not pressed
-      if (!input.isPressed(x)) { pc++; }
+      if (!input.isPressed(x)) { pc += 2; }
       break;
     }
+    break;
   }
 
   case 0xf: {
@@ -180,6 +186,7 @@ void Cpu::executeInstr()
 
     case 0x0a: // FX0A Block until key in vX is pressed
       // TODO
+      throwUnrecognizedInstr();
       break;
 
     case 0x15: // FX15 Set the delay timer to vX
@@ -195,9 +202,11 @@ void Cpu::executeInstr()
       break;
 
     case 0x29: // FX29 TODO Set ri to the address of the font for character in vX
+      throwUnrecognizedInstr();
       break;
 
     case 0x33: // FX33 TODO Store the BCD representation of vX at memory locations [ri, ri+1, ri+3]
+      throwUnrecognizedInstr();
       break;
 
     case 0x55: { // FX55 Dump all register v0-vF to memory location starting at ri
@@ -218,11 +227,19 @@ void Cpu::executeInstr()
       break;
     }
     }
+    break;
   }
 
   default:
-    throw "Unrecognized instruction opcode";
+    throwUnrecognizedInstr();
   }
+}
+
+void Cpu::throwUnrecognizedInstr()
+{
+  std::stringstream ss;
+  ss << "Unrecognized instruction opcode " << std::hex << instr << std::endl;
+  throw ss.str();
 }
 
 void Cpu::dumpState()

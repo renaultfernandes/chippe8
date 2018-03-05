@@ -1,3 +1,5 @@
+#pragma once
+
 #include "memory.hpp"
 #include "graphics.hpp"
 #include "input.hpp"
@@ -39,6 +41,7 @@ private:
 
   uint16_t fetchInstr();
   void executeInstr();
+  void throwUnrecognizedInstr();
 
 public:
   void runStep();

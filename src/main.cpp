@@ -9,7 +9,6 @@ int main(int argc, char** argv)
   else {
     Chippe8 chippe8;
     chippe8.loadGame(argv[1]);
-    // chippe8.dumpState();
     chippe8.run();
   }
 }

@@ -1,12 +1,21 @@
 #include "chippe8.hpp"
 #include <fstream>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 void Chippe8::run()
 {
+  auto msPerFrame = std::chrono::milliseconds(MS_PER_FRAME);
   while (true) {
+    auto startTime = std::chrono::steady_clock::now();
+
     cpu.runStep();
     timer.tick();
+    graphics.render();
+
+    auto endTime = std::chrono::steady_clock::now();
+    std::this_thread::sleep_for(startTime + msPerFrame - endTime);
   }
 }
 
