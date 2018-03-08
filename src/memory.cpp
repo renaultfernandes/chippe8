@@ -1,7 +1,14 @@
 #include "memory.hpp"
 #include <string>
 #include <iostream>
-#include <iomanip>
+
+void Memory::init()
+{
+  // Load the fonts into the memory
+  // for (uint16_t i = FONTS_START_ADDRESS; i < FONTS_END_ADDRESS; i++) {
+  //   memory[i] = chip8Fonts[i - FONTS_START_ADDRESS];
+  // }
+}
 
 uint8_t Memory::read(const uint16_t address)
 {
@@ -25,6 +32,7 @@ void Memory::set(const uint16_t address, const uint8_t value)
 void Memory::reset()
 {
   std::fill_n(memory, MEMORY_SIZE, 0);
+  init();
 }
 
 void Memory::dump()

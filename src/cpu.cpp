@@ -1,4 +1,5 @@
 #include "cpu.hpp"
+#include "fonts.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -185,8 +186,9 @@ void Cpu::executeInstr()
       break;
 
     case 0x0a: // FX0A Block until key in vX is pressed
-      // TODO
-      throwUnrecognizedInstr();
+      if (!input.isPressed(v[x])) {
+        pc -= 2;
+      }
       break;
 
     case 0x15: // FX15 Set the delay timer to vX
@@ -201,12 +203,14 @@ void Cpu::executeInstr()
       ri += v[x];
       break;
 
-    case 0x29: // FX29 TODO Set ri to the address of the font for character in vX
-      throwUnrecognizedInstr();
+    case 0x29: // FX29 Set ri to the address of the font for character in vX
+      ri = FONTS_START_ADDRESS + (FONT_BYTE_COUNT * v[x]);
       break;
 
-    case 0x33: // FX33 TODO Store the BCD representation of vX at memory locations [ri, ri+1, ri+3]
-      throwUnrecognizedInstr();
+    case 0x33: // FX33 Store the BCD representation of vX at memory locations [ri, ri+1, ri+2]
+      memory.set(ri, v[x] / 100);
+      memory.set(ri + 1, v[x] / 10 % 10);
+      memory.set(ri + 2, v[x] % 10);
       break;
 
     case 0x55: { // FX55 Dump all register v0-vF to memory location starting at ri

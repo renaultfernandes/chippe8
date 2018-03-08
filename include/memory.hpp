@@ -1,6 +1,7 @@
+#pragma once
+
 #include <stdint.h>
 
-#pragma once
 #define MEMORY_SIZE 4096
 
 class Memory {
@@ -13,7 +14,12 @@ public:
   }
 
 private:
-  Memory() {}
+  Memory()
+  {
+    init();
+  }
+
+  void init();
   uint8_t memory[MEMORY_SIZE];
 
 public:
