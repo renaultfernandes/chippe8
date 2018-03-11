@@ -7,7 +7,7 @@
 #define FONT_BYTE_COUNT 5
 #define FONTS_END_ADDRESS (FONTS_START_ADDRESS + NUM_FONTS * FONT_BYTE_COUNT)
 
-uint8_t chip8Fonts[] = {
+static const uint8_t chip8Fonts[] = {
   0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
   0x20, 0x60, 0x20, 0x20, 0x70, // 1
   0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2

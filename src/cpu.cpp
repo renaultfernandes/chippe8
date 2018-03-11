@@ -3,6 +3,21 @@
 #include <iostream>
 #include <sstream>
 
+void Cpu::reset()
+{
+  for (int i = 0; i < NUM_REGS; i++) {
+    v[i] = 0;
+  }
+  for (int i = 0; i < NUM_STACK_LEVELS; i++) {
+    stack[i] = 0;
+  }
+  pc = PROGRAM_START_ADDRESS;
+  ri = sp = 0;
+
+  // Initialize the random number generator (used in instr opcode 0xCXNN)
+  srand(time(0));
+}
+
 void Cpu::runStep()
 {
   instr = fetchInstr();
@@ -12,6 +27,10 @@ void Cpu::runStep()
   catch (std::string ex) {
     std::cout << "Caught Exception: " << ex << std::endl;
   }
+
+  // dumpState();
+  // int32_t x;
+  // std::cin >> x;
 }
 
 uint16_t Cpu::fetchInstr()
@@ -105,13 +124,13 @@ void Cpu::executeInstr()
       break;
 
     case 4: // 8XY4 Set vX to vX + vY, set vF if carry
-      v[x] += v[y];
       v[0xF] = v[y] > 0xff - v[x] ? 1 : 0;
+      v[x] += v[y];
       break;
 
     case 5: // 8XY5 Set vX to vX - vY, unset vF if borrow
-      v[x] -= v[y];
       v[0xF] = v[y] > v[x] ? 0 : 1;
+      v[x] -= v[y];
       break;
 
     case 6: // 8XY6 Set vX and vY to vY >> 1, vF to lsb of vY
@@ -120,8 +139,8 @@ void Cpu::executeInstr()
     break;
 
     case 7: // 8XY7 Set vX to vY - vX, unset vF if borrow
-      v[x] = v[y] - v[x];
       v[0xF] = v[x] > v[y] ? 0 : 1;
+      v[x] = v[y] - v[x];
       break;
 
     case 8: // 8XY8 Set vX and vY to vY << 1, vF to msb of vY
@@ -159,7 +178,7 @@ void Cpu::executeInstr()
     uint8_t y = (instr & 0x00f0) >> 4;
     uint8_t n = instr & 0x000f;
     uint8_t* spriteData = memory.readN(ri, n);
-    v[0xf] = graphics.drawSprite(x, y, n, spriteData);
+    v[0xf] = graphics.drawSprite(v[x], v[y], n, spriteData);
     break;
   }
 

@@ -10,6 +10,7 @@
 
 #define NUM_REGS 16
 #define NUM_STACK_LEVELS 16
+#define PROGRAM_START_ADDRESS 512
 
 class Cpu {
 
@@ -35,8 +36,7 @@ private:
 
   Cpu() : memory(Memory::instance()), graphics(Graphics::instance()), input(Input::instance()), timer(Timer::instance())
   {
-    // Initialize the random number generator (used in instr opcode 0xCXNN)
-    srand(time(0));
+    reset();
   }
 
   uint16_t fetchInstr();
@@ -44,6 +44,7 @@ private:
   void throwUnrecognizedInstr();
 
 public:
+  void reset();
   void runStep();
   void dumpState();
 };

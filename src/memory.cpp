@@ -1,13 +1,14 @@
 #include "memory.hpp"
+#include "fonts.hpp"
 #include <string>
 #include <iostream>
 
 void Memory::init()
 {
   // Load the fonts into the memory
-  // for (uint16_t i = FONTS_START_ADDRESS; i < FONTS_END_ADDRESS; i++) {
-  //   memory[i] = chip8Fonts[i - FONTS_START_ADDRESS];
-  // }
+  for (uint16_t i = FONTS_START_ADDRESS; i < FONTS_END_ADDRESS; i++) {
+    memory[i] = chip8Fonts[i - FONTS_START_ADDRESS];
+  }
 }
 
 uint8_t Memory::read(const uint16_t address)

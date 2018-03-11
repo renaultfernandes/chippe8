@@ -11,21 +11,16 @@ void Graphics::clear()
 
 uint16_t Graphics::drawSprite(uint8_t x, uint8_t y, uint8_t n, uint8_t *spriteData)
 {
-  std::cout << "Draw to (" << uint16_t(x) << ", " << uint16_t(y) << ")" << std::endl;
-  uint8_t pixelFlippedToUnset = 0;
+  uint8_t collisionDetected = 0;
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < SPRITE_WIDTH; j++) {
-      uint8_t currentPixelIsSet = 0;
-      if (buffer[(i + y) * RES_X + (j + x)] == 1) {
-        currentPixelIsSet = 1;
-      }
-      buffer[(i + y) * RES_X + (j + x)] ^= spriteData[i * SPRITE_WIDTH + j];
-      if (currentPixelIsSet && buffer[(i + y) * RES_X + (j + x)] == 0) {
-        pixelFlippedToUnset = 1;
+      if (spriteData[i] & (0x80 >> j)) {
+        collisionDetected = buffer[(y + i) * RES_X + (x + j)];
+        buffer[(y + i) * RES_X + (x + j)] ^= 1;
       }
     }
   }
-  return pixelFlippedToUnset;
+  return collisionDetected;
 }
 
 void Graphics::sdl_init()
@@ -52,7 +47,7 @@ void Graphics::render()
   for (int i = 0; i < RES_Y; i++) {
     for (int j = 0; j < RES_X; j++) {
       if (buffer[i * RES_X + j] == 1) {
-        SDL_RenderDrawPoint(renderer, i, j);
+        SDL_RenderDrawPoint(renderer, j, i);
       }
     }
   }
