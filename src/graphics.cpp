@@ -26,7 +26,9 @@ uint16_t Graphics::drawSprite(uint8_t x, uint8_t y, uint8_t n, uint8_t *spriteDa
 void Graphics::sdl_init()
 {
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_CreateWindowAndRenderer(RES_X, RES_Y, 0, &window, &renderer);
+  SDL_CreateWindowAndRenderer(RES_X * WINDOW_UPSCALE, RES_Y * WINDOW_UPSCALE, 0, &window, &renderer);
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0);
+  SDL_RenderSetLogicalSize(renderer, RES_X, RES_Y);
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
   SDL_RenderClear(renderer);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

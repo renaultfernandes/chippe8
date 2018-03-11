@@ -13,5 +13,4 @@ It is currently WIP, however most of its functionality and architecture is imple
 
 ## TODO
 
-* Adjust renderer output window size.
 * Capture inputs and set keypad flags.

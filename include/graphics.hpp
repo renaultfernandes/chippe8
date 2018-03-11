@@ -5,6 +5,7 @@
 
 #define RES_X 64
 #define RES_Y 32
+#define WINDOW_UPSCALE 4
 #define SPRITE_WIDTH 8
 
 class Graphics {
