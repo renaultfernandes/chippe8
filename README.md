@@ -10,7 +10,4 @@ It is currently WIP, however most of its functionality and architecture is imple
 * All opcodes in its CPU interpreter have been implemented.
 * Emulator architecture is completed.
 * Able to run CHIP-8 ROMS and display graphics on the screen.
-
-## TODO
-
-* Capture inputs and set keypad flags.
+* Basic input functionality implemented.

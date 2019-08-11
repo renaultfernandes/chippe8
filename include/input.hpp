@@ -1,6 +1,8 @@
 #pragma once
 
 #include <stdint.h>
+#include <SDL2/SDL.h>
+#include <iostream>
 
 #define NUM_KEYS 16
 
@@ -14,9 +16,14 @@ public:
   }
 
 private:
+  bool pressed[NUM_KEYS] = {false};
+
   Input() {}
-  uint8_t pressed[NUM_KEYS];
+  void toggleKey(uint8_t keyCode);
 
 public:
-  uint8_t isPressed(uint8_t keyCode);
+  bool isPressed(uint8_t keyCode);
+  void pressKey(uint8_t keyCode);
+  void unpressKey(uint8_t keyCode);
+  void handleInput(SDL_Event event, bool keyDown);
 };
